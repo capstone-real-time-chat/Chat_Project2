@@ -158,12 +158,12 @@ def kakao_login_callback(
 
     response = RedirectResponse(url="http://localhost:3000")
 
-    # ✅ 쿠키 붙이기
+    # 쿠키 붙이기
     response.set_cookie(
         key="access_token",
         value=token,
         httponly=True,
-        secure=False,   # ⚠️ 운영 시 True
+        secure=False,   #  운영 시 True
         samesite="lax"
     )
 
