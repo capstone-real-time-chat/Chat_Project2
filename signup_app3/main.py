@@ -29,7 +29,7 @@ def get_db():
         db.close()
 
 # [일반 로그인 or 자동 회원가입] API
-@app.post("/auth/login", response_model=schemas.Token)
+@app.post("/auth/signUp", response_model=schemas.Token)
 def login_or_signup(
     response: Response,  # 기본값이 없는 인자는 앞에 위치해야 함
     email: str = Form(...),           # 사용자 이메일
@@ -54,6 +54,35 @@ def login_or_signup(
         )
         user = crud.create_user(db, new_user)
 
+    # 로그인 성공 또는 회원가입 완료 시 토큰 발급
+    token = auth.create_access_token(data={"sub": str(user.id)})
+
+    # JWT 토큰 발급 후, 쿠키로 설정하는 코드
+    response.set_cookie(
+        key="access_token",
+        value=token,
+        httponly=True,
+        secure=False,     # 로컬에서는 반드시 False로 둬야 함, 배포 시에는 secure=True로 바꿔야 함
+        samesite="lax"
+    )
+    return {"access_token": token, "token_type": "bearer"}
+    # 로컬 로그인
+@app.post("/auth/login", response_model=schemas.Token)
+def login_or_signup(
+    response: Response,  # 기본값이 없는 인자는 앞에 위치해야 함
+    email: str = Form(...),           # 사용자 이메일
+    password: str = Form(...),         # 사용자 닉네임
+    db: Session = Depends(get_db),      # DB 세션 의존성 주입
+):
+    # 입력한 이메일로 유저 검색
+    user = crud.get_user_by_email(db, email)
+
+    if user:
+        # 이미 존재하는 유저라면 비밀번호 검증
+        if not user.password or not crud.verify_password(password, user.password):
+            raise HTTPException(status_code=400, detail="Invalid credentials")
+    else:
+        raise HTTPException(status_code=400, detail="없는 회원 입니다.")
     # 로그인 성공 또는 회원가입 완료 시 토큰 발급
     token = auth.create_access_token(data={"sub": str(user.id)})
 
