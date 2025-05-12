@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Login.css';
+import api from './api';
 
 function Login({ onClickSignUp }) {
     const [username, setUsername] = useState('');
@@ -11,9 +12,21 @@ function Login({ onClickSignUp }) {
         // 실제 로그인 처리 (예: API 호출)는 여기 추가
       };
 
-      const handleKakaoLogin = () => {
-        window.location.href = "http://localhost:8000/login/kakao"; // FastAPI에서 카카오 인증 시작하는 주소
-      };
+    //   const handleKakaoLogin = async () => {
+    //     try {
+    //         const res = await api.get('auth/kakao/callback'); // 서버에서 카카오 인증 URL 받아오기
+    //         window.location.href = res.data.url; // 카카오 로그인 페이지로 이동
+    //     } catch (err) {
+    //         console.error('카카오 로그인 요청 실패:', err);
+    //         alert('카카오 로그인에 실패했습니다.');
+    //     }
+    // };
+
+  const handleKakaoLogin = () => {
+      // 브라우저를 FastAPI 서버의 /auth/kakao/callback 으로 이동
+      window.location.href = "http://localhost:8000/api/auth/kakao/callback";
+  };
+
 
       return (
         <div className="login-main">
