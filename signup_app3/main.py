@@ -66,6 +66,9 @@ def login_or_signup(
         samesite="lax"
     )
     return {"access_token": token, "token_type": "bearer"}
+
+
+    
     # 로컬 로그인
 @app.post("/auth/login", response_model=schemas.Token)
 def login_or_signup(
