@@ -1,0 +1,74 @@
+.search {
+    background-color: rgb(255, 255, 255);
+    position: absolute;
+    position: fixed;
+    left: 50px;
+    width: 330px;
+    height: 100%;
+    box-shadow: 1px 0 2px rgba(185, 185, 185, 0.3);
+    border-right: 0.5px solid #ececec; /* 회색 실선 추가 */
+    transform: translateX(-100%); /* 시작 위치: 왼쪽으로 숨김 */
+    transition: transform 0.5s ease-in-out; /* 슬라이딩 애니메이션 */
+  }
+
+.search.visible {
+    transform: translateX(0); /* 나타날 때: 원래 위치로 */
+}
+
+.search.hidden {
+    transform: translateX(-100%); /* 사라질 때: 왼쪽으로 */
+}
+
+.searching {
+    padding: 15px;
+}
+
+.search-input {
+    position: absolute;
+    top: 20px;
+    width: 300px;
+    padding: 10px;
+    padding-right: 40px;
+    padding-left: 14px;
+    font-size: 14px;
+    border: 1px solid #3595fb;
+    border-radius: 20px;
+    box-sizing: border-box;
+}
+
+.search-button-img {
+    position: absolute;
+    top: 26px;
+    left: 282px;
+    width: 25px;
+    height: 25px;
+    opacity: 0.8;
+}
+
+.search-history {
+    margin-top: 40px;
+    padding: 0 15px;
+  }
+  
+  .history-item {
+    font-size: 14px;
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #333;
+  }
+  
+  .delete-button {
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0 0px;
+  }
+
+  .delete-button:hover {
+    color: #ff4d4d;
+  }

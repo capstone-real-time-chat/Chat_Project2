@@ -1,0 +1,22 @@
+.chat-main {
+    background-color: rgb(255, 255, 255);
+    position: absolute;
+    right: 0px;
+    width: 340px; /* 양쪽 10px 공간 확보 */
+    height: 100%;
+    box-shadow: -1px 0 2px rgba(185, 185, 185, 0.3);
+    border-left: 0.5px solid #ececec; /* 회색 실선 추가 */
+    display: flex;
+    flex-direction: column;
+  }
+
+  .chat-close {
+    position: absolute;
+    align-self: flex-end;
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 10px;
+  }

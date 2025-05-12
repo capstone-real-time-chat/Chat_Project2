@@ -1,0 +1,8 @@
+.sign-up {
+    background-color: rgb(255, 129, 209);
+    position: absolute;
+    left: 50px;
+    top: 66px;
+    width: calc(100% - 50px); /* 양쪽 10px 공간 확보 */
+    height: calc(100% - 66px); /* 위 20px 공간 확보 */
+  }

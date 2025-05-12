@@ -1,0 +1,16 @@
+.stock-main {
+    background-color: rgb(255, 255, 255);
+    position: absolute;
+    left: 50px;
+    top: 66px;
+    width: calc(100% - 50px); /* 양쪽 10px 공간 확보 */
+    height: calc(100% - 66px); /* 위 20px 공간 확보 */
+  }
+
+.chat-img {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width:40px;
+  height: 40px;
+}
