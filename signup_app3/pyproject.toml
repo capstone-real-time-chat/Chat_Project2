@@ -1,0 +1,9 @@
+[project]
+name = "signup-app3"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12.9"
+dependencies = [
+    "uvicorn>=0.34.0",
+]
