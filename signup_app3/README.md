@@ -1,4 +1,4 @@
-프론트에서 닉네임 사용하는 방법: FastAPI 백엔드에서 발급한 access_token(JWT) 쿠키를 프론트에서 디코딩하여 닉네임 정보를 추출하고 사용
+프론트에서 닉네임 사용하는 방법 -> FastAPI 백엔드에서 발급한 access_token(JWT) 쿠키를 프론트에서 디코딩하여 닉네임 정보를 추출하고 사용
 
 
 
@@ -39,8 +39,9 @@ export function getNicknameFromToken(): string | null {
 
 
 
-토큰을 디코딩 한 후 닉네임 데이터를 쓸 수 있게 됐을 때!! 
-import 해서 nickname 가져오고 바로 적용하면 되는 것 같습니다. 예시 사용 방법을 아래에 작성하겠습니다. (정확히는 모릅니다...)
+토큰을 디코딩 한 후 닉네임 데이터를 쓸 수 있게 됐을 때!!
+import 해서 nickname 가져오고 바로 적용하면 되는 것 같습니다. 예시 사용 방법을 아래에 작성하겠 
+습니다. (정확히는 모릅니다...)
 1. 로그인 시 닉네임을 표시하는 컴포넌트 생성
 #tsx
 // components/ProfileBadge.tsx
@@ -111,4 +112,3 @@ function ChatInput() {
     />
   );
 }
-
