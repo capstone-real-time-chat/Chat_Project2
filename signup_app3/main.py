@@ -67,7 +67,7 @@ def login_or_signup(
     response.set_cookie(
         key="access_token",  # 위 token에 닉네임 넣었으니까 여기도 포함돼 있는 거예요(0529 수정)
         value=token,
-        httponly=True,
+        httponly=False,
         secure=False,     # 로컬에서는 반드시 False로 둬야 함, 배포 시에는 secure=True로 바꿔야 함
         samesite="lax"
     )
@@ -132,7 +132,7 @@ def kakao_login(
     response.set_cookie(
         key="access_token",
         value=token,
-        httponly=True,
+        httponly=False,
         secure=False,
         samesite="lax"
     )
@@ -191,7 +191,7 @@ def kakao_login_callback(
     response.set_cookie(
         key="access_token",
         value=token,
-        httponly=True,
+        httponly=False,
         secure=False,   # 운영 시 True
         samesite="lax"
     )
