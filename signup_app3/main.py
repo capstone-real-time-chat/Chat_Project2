@@ -7,7 +7,7 @@ from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from . import models, schemas, crud, database, database, auth, kakao
 from .dependencies import get_current_user
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.coNrs import CORSMiddleware
 from fastapi.responses import JSONResponse
 import os
 
@@ -28,7 +28,8 @@ def get_db():
     finally:
         db.close()
 
-# [일반 로그인 or 자동 회원가입] API
+
+# [일반 로그인] API
 @app.post("/auth/login", response_model=schemas.Token)
 def login_or_signup(
     response: Response,  # 기본값이 없는 인자는 앞에 위치해야 함
@@ -54,21 +55,29 @@ def login_or_signup(
         )
         user = crud.create_user(db, new_user)
 
-    # 로그인 성공 또는 회원가입 완료 시 토큰 발급
-    token = auth.create_access_token(data={"sub": str(user.id)})
+    # 로그인 성공 또는 회원가입 완료 시 JWT 토큰 발급
+    token = auth.create_access_token(data={
+        
+        # 아래 데이터들이 JWT의 payload로 들어감
+        "sub": str(user.id),
+        "nickname": user.nickname  # 닉네임 포함한 토큰 반영(0529 수정)
+        })
 
-    # JWT 토큰 발급 후, 쿠키로 설정하는 코드
+    # JWT 토큰 발급 후, 쿠키로 설정하는 코드(쿠키에 payload가 담긴 JWT 토큰이 저장되도록)
     response.set_cookie(
-        key="access_token",
+        key="access_token",  # 위 token에 닉네임 넣었으니까 여기도 포함돼 있는 거예요(0529 수정)
         value=token,
         httponly=True,
         secure=False,     # 로컬에서는 반드시 False로 둬야 함, 배포 시에는 secure=True로 바꿔야 함
         samesite="lax"
     )
+
+    '''
+    일반 로그인에서는 프론트에서 로그인 form을 AJAX로 제출하고 백엔드가 JSON으로 token을 응답한다. 
+    프론트가 res.json()으로 받아서 화면 갱신하면 된다. 리다이렉트 필요 X
+    '''
     return {"access_token": token, "token_type": "bearer"}
 
-
-# [카카오 로그인] API
 
 # [카카오 로그인] API
 @app.post("/auth/kakao/callback", response_model=schemas.Token)
@@ -88,10 +97,8 @@ def kakao_login(
 
     # 카카오 사용자 고유 ID (난수) 가져오기
     kakao_id = str(user_info["id"])
-
     # 카카오 프로필 닉네임 가져오기
     nickname = user_info["properties"]["nickname"]
-
     # 이메일 필드에 "kakao_난수" 형태로 저장
     generated_email = f"kakao_{kakao_id}"
 
@@ -107,12 +114,31 @@ def kakao_login(
         )
         user = crud.create_user(db, new_user)
 
-    # 로그인 성공 시 토큰 발급
-    token = auth.create_access_token(data={"sub": str(user.id)})
+    # 로그인 성공 시 JWT 토큰 발급
+        token = auth.create_access_token(data={   # 닉네임 포함한 토큰 반영(0529 수정)
+        "sub": str(user.id),
+        "nickname": user.nickname
+    })
 
-    return {"access_token": token, "token_type": "bearer"}
+    '''
+    카카오 로그인에서는 
+    프론트에서 카카오 로그인 버튼을 클릭하면 Kakao Auth URL로 리다이렉트되고 
+    로그인 후 카카오는 백엔드의 /auth/kakao/callback?code=...로 리디렉션(카카오 개발자 사이트에서 해 줌)
+    그 후 백엔드가 카카오 토큰을 요청하고 사용자 정보 확인 후 쿠키로 JWT 설정
+    그리고 클라이언트 브라우저를 다시 프론트 주소로 리다이렉트
+    따라서 JSON 응답을 줄 수 없음, RedirectResponse로 페이지 이동시켜야 함
+    '''
+    response = RedirectResponse(url="http://localhost:3000")
+    response.set_cookie(
+        key="access_token",
+        value=token,
+        httponly=True,
+        secure=False,
+        samesite="lax"
+    )
+    return response
 
-
+# 카카오가 보낸 요청을 받는 라우터 (리디렉션 자체는 카카오가 내 설정대로 보내 주는 것)
 @app.get("/auth/kakao/callback")
 def kakao_login_callback(
     request: Request,
@@ -153,8 +179,11 @@ def kakao_login_callback(
         )
         user = crud.create_user(db, new_user)
 
-    # 로그인 성공 시 토큰 발급
-    token = auth.create_access_token(data={"sub": str(user.id)})
+    # 로그인 성공 시 JWT 토큰 발급
+    token = auth.create_access_token(data={
+        "sub": str(user.id),
+        "nickname": user.nickname   # 닉네임 포함한 토큰 반영(0529 수정)
+    })
 
     response = RedirectResponse(url="http://localhost:3000")
 
@@ -168,9 +197,7 @@ def kakao_login_callback(
     )
 
     return response
-   
-    # 로그인 성공한 사용자를 받아줄 특정 URL 페이지를 프론트에서 만들 건데,
-    # 아직 주소가 안 정해졌으니 http://localhost:3000/kakao/success 로 임시 저장하겠음
+
 
 # 쿠키에 access_token이 있고 유효하면 유저 정보를 반환하는 라우터
 @app.get("/api/auth/kakao/callback")
