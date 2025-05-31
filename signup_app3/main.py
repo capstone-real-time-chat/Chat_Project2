@@ -7,9 +7,11 @@ from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from . import models, schemas, crud, database, database, auth, kakao
 from .dependencies import get_current_user
-from fastapi.middleware.coNrs import CORSMiddleware
+# from fastapi.middleware.coNrs import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 import os
+
 
 # 데이터베이스의 테이블 생성 (models.py의 모든 테이블을 실제 DB에 반영)
 models.Base.metadata.create_all(bind=database.engine)
